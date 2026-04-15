@@ -1,6 +1,7 @@
 package tn.esprit.spring.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,80 +17,71 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	UserRepository userRepository;
 
-
-
 	private static final Logger l = LogManager.getLogger(UserServiceImpl.class);
 
 	@Override
-	public List<User> retrieveAllUsers() { 
-
-		return null;
+	public List<User> retrieveAllUsers() {
+		l.info("In retrieveAllUsers()");
+		List<User> users = null;
+		try {
+			users = userRepository.findAll();
+			l.info("Out retrieveAllUsers()");
+		} catch (Exception e) {
+			l.error("Error in retrieveAllUsers() : " + e);
+		}
+		return users;
 	}
-
 
 	@Override
 	public User addUser(User u) {
-
-		User utilisateur = null; 
-
+		l.info("In addUser()");
+		User utilisateur = null;
 		try {
-			// TODO Log à ajouter en début de la méthode 
-			utilisateur = userRepository.save(u); 
-			// TODO Log à ajouter à la fin de la méthode 
-
+			utilisateur = userRepository.save(u);
+			l.info("Out addUser()");
 		} catch (Exception e) {
-			// TODO log ici : l....("error in addUser() : " + e);
+			l.error("Error in addUser() : " + e);
 		}
-
-		return utilisateur; 
+		return utilisateur;
 	}
 
-	@Override 
+	@Override
 	public User updateUser(User u) {
-
-		User userUpdated = null; 
-		User u_saved = null; 
-
-		
+		l.info("In updateUser()");
+		User userUpdated = null;
 		try {
-			// TODO Log à ajouter en début de la méthode 
-			userUpdated = userRepository.save(u); 
-			// TODO Log à ajouter à la fin de la méthode 
-
+			userUpdated = userRepository.save(u);
+			l.info("Out updateUser()");
 		} catch (Exception e) {
-			// TODO log ici : l....("error in updateUser() : " + e);
+			l.error("Error in updateUser() : " + e);
 		}
-
-		return userUpdated; 
+		return userUpdated;
 	}
 
 	@Override
 	public void deleteUser(String id) {
-
+		l.info("In deleteUser()");
 		try {
-			// TODO Log à ajouter en début de la méthode 
-			userRepository.deleteById(Long.parseLong(id)); 
-			// TODO Log à ajouter à la fin de la méthode 
-
+			userRepository.deleteById(Long.parseLong(id));
+			l.info("Out deleteUser()");
 		} catch (Exception e) {
-			// TODO log ici : l....("error in deleteUser() : " + e);
+			l.error("Error in deleteUser() : " + e);
 		}
-
 	}
 
 	@Override
 	public User retrieveUser(String id) {
+		l.info("In retrieveUser()");
 		User u = null;
 		try {
-			u =  userRepository.findById(Long.parseLong(id)).get();
-
+			Optional<User> optionalUser = userRepository.findById(Long.parseLong(id));
+			if (optionalUser.isPresent()) {
+				u = optionalUser.get();
+			}
+			l.info("Out retrieveUser()");
 		} catch (Exception e) {
+			l.error("Error in retrieveUser() : " + e);
 		}
-
 		return u;
 	}
-
-	
-	
-	
 }
